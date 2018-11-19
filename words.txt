@@ -1,0 +1,11 @@
+1 python
+2 print
+3 not
+4 and
+5 or
+6 in
+7 if
+8 switch
+9 for
+10 def
+11 return

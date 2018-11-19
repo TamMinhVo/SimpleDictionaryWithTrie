@@ -1,0 +1,11 @@
+1  python la mot trong nhung ngon ngu lap trinh dang duoc chu y boi tinh da dang ve ung dung, thu vien phong phu va cong dong dong dao.
+2  print co chuc nang in du lieu ra man hinh.
+3  not la toan tu dao gia tri.
+4  and la phep tinh logic va.
+5  or phep tinh logic hoac.
+6  in la toan tu kiem tra phan tu CO ton tai trong tap hop.
+7  if la cau dieu kien. Luu y: elif tuong ung voi else if cua mot so ngon ngu khac. Ket thuc dieu kien la dau hai cham.
+8  switch python khong co cau truc switch...case.
+9  for la cau truc lap, co nhieu cach dung: for var in set, for var in range...
+10 def la tu khoa dung de khai bao ham trong python.
+11  return la tu khoa tra ve gia tri trong ham hoac de thoat khoi ham...
