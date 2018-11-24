@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <cstring>
 #include <string>
 #include <string.h>
 #include <fstream>
@@ -10,7 +9,6 @@ using namespace std;
 
 int numberOfWord = 0;
 const int ALPHABET_SIZE = 26;
-
 
 struct Node
 {
@@ -56,17 +54,17 @@ void InsertIntoTrie(Node* root, string word)
 		tem = tem->children[inW];
 	}
 
-	tem->enOfWord = ++numberOfWord;
+	tem->enOfWord = numberOfWord;
 }
 
 void ContructTrie(Node* root)
 {
 	int index;
 	string word;
-	int numberOfWord = 0;
+	//int numberOfWord = 0;
 	ifstream readFile;
 
-	readFile.open("words.txt"); if (readFile.fail()) { std::cout << "Fail to open file word"; exit(0); }
+	readFile.open("words.txt"); if (readFile.fail()) { std::cout << "\nFail to open file word"; exit(0); }
 
 	//xây dựng cây từ file đã có sẵn.
 	while (!readFile.eof())
@@ -81,7 +79,7 @@ void ContructTrie(Node* root)
 void LookupWord(Node* root)
 {
 	string lookupWord;
-	cout << endl << "\nNhap tu can tra: ";
+	cout << "\nNhap tu can tra: ";
 	fflush(stdin);
 	cin.ignore();
 	getline(cin, lookupWord);
@@ -95,7 +93,7 @@ void LookupWord(Node* root)
 		int index;
 		int place = 0;
 
-		readFile.open("description.txt"); if (readFile.fail()) { std::cout << "Fail to open file description"; return; }
+		readFile.open("description.txt"); if (readFile.fail()) { std::cout << "\nFail to open file description"; return; }
 		while (!readFile.eof())
 		{
 			readFile >> index;
@@ -111,15 +109,15 @@ void LookupWord(Node* root)
 		readFile.close();
 	}
 	else
-		cout << "\nTu " << lookupWord << " chua duoc them vao tu dien";
+		cout << "\nTu ---" << lookupWord << "--- chua duoc them vao tu dien";
 }
 
 void AddWord(Node* root)
 {
 	string word;
 	cin.ignore();
-	cout << "\nNhap tu can them vao tu dien: ";
-	cin >> word;
+	std::cout << "\nNhap tu can them vao tu dien: ";
+	std::cin >> word;
 
 	Node *tem = root;
 	int inW;
@@ -128,7 +126,7 @@ void AddWord(Node* root)
 	for (;i < word.length(); i++)
 	{
 		inW = word[i] - 'a';
-		if (!tem->children[inW])
+		if (!tem->children[inW] && tem->enOfWord == 0)
 		{
 			isNew = true;
 			break;
@@ -142,14 +140,15 @@ void AddWord(Node* root)
 		for (i; i < word.length(); i++)
 		{
 			inW = word[i] - 'a';
-			tem->children[inW] = InitializeNode();
+			if (!tem->children[inW])
+				tem->children[inW] = InitializeNode();
 			tem = tem->children[inW];
 		}
 		tem->enOfWord = ++numberOfWord;
 
 		//thêm vào  file tập tin words, và description
 		string descrip;
-		cout << "\nNhap mo ta cho tu: ";
+		std::cout << "\nNhap mo ta cho tu: ";
 		fflush(stdin);
 		//fflush(stdin);
 		cin.ignore();
@@ -162,11 +161,11 @@ void AddWord(Node* root)
 
 		writeFile.open("description.txt", ios::app);
 		writeFile << endl << numberOfWord << " " << descrip;
-		cout << "\nThem thanh cong";
+		std::cout << "\nThem thanh cong";
 		writeFile.close();
 	}
 	else
-		cout << "\nTu nay da co trong tu dien!"; //xử lý update?
+		std::cout << "\nTu nay da co trong tu dien!";
 }
 
 static std::vector<char> ReadAllBytes(char const* filename)
@@ -181,36 +180,25 @@ static std::vector<char> ReadAllBytes(char const* filename)
 
 	return result;
 }
-//string toString(int n)
-//{
-//	string s = "";
-//	char c;
-//	while (n != 0)
-//	{
-//		c = n % 10 - '0';
-//		s += c;
-//		n /= 10;
-//	}
-//	return s;
-//}
+
 void UpdateWord(Node* root)
 {
 	string descrip, word;
-	cout << "\nNhap tu can cap nhat mo ta: ";
+	std::cout << "\nNhap tu can cap nhat mo ta: ";
 	cin.ignore();
-	getline(cin, word);
+	getline(std::cin, word);
 	short update = 2;
 	int pos = Search(root, word);
 	if(pos > 0)
-		cout<< "\nTu nay da co trong tu dien!\nBan co muon cap nhat lai tu nay?\n1. Co.\nKhac. Khong.";
+		std::cout<< "\nTu nay da co trong tu dien! Ban co muon cap nhat lai tu nay?\n1. Co.\nKhac. Khong. ";
 	
-	cin >> update;
+	std::cin >> update;
 	if (update != 1)
 		return;
 	//Nhập mô tả mới
-	cout << "\nNhap mo ta moi: ";
-	cin.ignore();
-	getline(cin, descrip);
+	std::cout << "\nNhap mo ta moi: ";
+	std::cin.ignore();
+	getline(std::cin, descrip);
 
 	//đọc dữ liệu từ file description lên theo từng dòng, đến dòng cần cập nhật (dòng có chỉ số trùng với pos vừa tìm ở trên) thì chỉ đọc dòng đó lên mà không ghi vào, thay thế bằng descrip vừa nhập
 	ifstream readFile;
@@ -227,7 +215,7 @@ void UpdateWord(Node* root)
 			result += "\n";
 		flag = 1;
 		readFile >> index;
-		fflush(stdin);
+		//fflush(stdin);
 		getline(readFile, description);
 
 		if (index == pos)
@@ -239,7 +227,7 @@ void UpdateWord(Node* root)
 		else
 		{
 			result += to_string(index);
-			result += " ";
+			//result += " ";
 			result += description;
 		}
 	}
@@ -248,8 +236,104 @@ void UpdateWord(Node* root)
 	ofstream writeFile;
 	writeFile.open("description.txt");
 	writeFile << result;
-	cout << "\nThem thanh cong";
+	std::cout << "\nCap nhat thanh cong";
 	writeFile.close();
+}
+
+void DeleteWord(Node* root)
+{
+	string word;
+	std::cout << "\nNhap tu can xoa: ";
+	cin.ignore();
+	getline(std::cin, word);
+
+	int pos;
+	Node *tem = root;
+	for (int i = 0; i < word.length(); i++)
+	{
+		pos = word[i] - 'a';
+		if (!tem->children[pos])
+		{
+			cout << "\nTu nay KHONG co trong tu dien!";
+			exit(1);
+		}
+
+		tem = tem->children[pos];
+	}
+	pos = tem->enOfWord;
+	//đặt lại dấu hiệu kết thúc của từ này = 0 tức là đây không còn là từ đã có trong từ điển.
+	tem->enOfWord = 0;
+	numberOfWord--;
+	//đọc dữ liệu từ file description lên theo từng dòng, đến dòng cần cập nhật (dòng có chỉ số trùng với pos vừa tìm ở trên) thì chỉ đọc dòng đó lên mà không ghi vào, thay thế bằng descrip vừa nhập
+	ifstream readFile;
+	ofstream writeFile;
+	int index;
+	//biến result lưu kết quả của file words/description sau khi đã cập nhật xong, sau đó ghi lại vào file
+	string result = "", temp;
+	bool flag = 0;
+
+	readFile.open("description.txt"); if (readFile.fail()) { std::cout << "\nFail to open file description"; return; }
+		
+	while (!readFile.eof())
+	{
+		if (flag == 1 && pos != index)
+			result += "\n";
+		flag = 1;
+
+		readFile >> index;
+		getline(readFile, temp);
+
+		if (index < pos)
+		{
+			result += to_string(index);
+			result += temp;
+		}
+		if(index > pos)
+		{
+			result += to_string(index-1);
+			result += temp;
+		}
+			
+	}
+	readFile.close();
+	//ghi du lieu vao lai file
+	writeFile.open("description.txt");
+	writeFile << result;
+	writeFile.close();
+	//---------------------------------------------------------------------------------------------------------------------//
+	//đọc dữ liệu từ file words lên theo từng dòng, đến dòng cần cập nhật (dòng có chỉ số trùng với pos vừa tìm ở trên) thì chỉ đọc dòng đó lên mà không ghi vào, thay thế bằng descrip vừa nhập
+
+	flag = 0;
+	result = "";
+	readFile.open("words.txt"); if (readFile.fail()) { std::cout << "Fail to open file words"; return; }
+
+	while (!readFile.eof())
+	{
+		if (flag == 1 && pos!=index)
+			result += "\n";
+		flag = 1;
+
+		readFile >> index;
+		getline(readFile, temp);
+
+		if (index < pos)
+		{
+			result += to_string(index);
+			//result += " ";
+			result += temp;
+		}
+		else if (index > pos)
+		{
+				result += to_string(index - 1);
+				result += temp;
+		}
+	}
+	readFile.close();
+	//ghi du lieu vao lai file
+	writeFile.open("words.txt");
+	writeFile << result;
+	writeFile.close();
+	std::cout << "\nXoa thanh cong";
 }
 int main()
 {
@@ -260,19 +344,22 @@ int main()
 	int x;
 	while(true)
 	{
-		cout << "\n1. Them tu vung.";
-		cout << "\n2. Tra tu.";
-		cout << "\n3. Cap nhat phan mo ta cua tu.";
-		cout << "\nKhac. Thoat.";
-		cout << "\nNhap lua chon: ";
-		cin >> x;
-		cout << "\n";
+		std::cout << "\n1. Them tu vung.";
+		std::cout << "\n2. Tra tu.";
+		std::cout << "\n3. Cap nhat phan mo ta cua tu.";
+		std::cout << "\n4. Xoa tu.";
+		std::cout << "\nKhac. Thoat.";
+		std::cout << "\nNhap lua chon: ";
+		std::cin >> x;
+		std::cout << "\n";
 		if (x == 1)
 			AddWord(root);
 		else if (x == 2)
 			LookupWord(root);
 		else if (x == 3)
 			UpdateWord(root);
+		else if(x==4)
+			DeleteWord(root);
 		else
 			break;
 	}
